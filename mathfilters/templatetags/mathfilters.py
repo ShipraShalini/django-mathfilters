@@ -14,15 +14,6 @@ register = Library()
 logger = logging.getLogger(__name__)
 
 
-def valid_numeric(arg):
-    if isinstance(arg, (int, float, Decimal)):
-        return arg
-    try:
-        return int(arg)
-    except ValueError:
-        return float(arg)
-
-
 def handle_float_decimal_combinations(value, arg, operation):
     if isinstance(value, float) and isinstance(arg, Decimal):
         logger.warning('Unsafe operation: {0!r} {1} {2!r}.'.format(value, operation, arg))
@@ -31,6 +22,16 @@ def handle_float_decimal_combinations(value, arg, operation):
         logger.warning('Unsafe operation: {0!r} {1} {2!r}.'.format(value, operation, arg))
         arg = Decimal(str(arg))
     return value, arg
+
+
+@register.filter
+def valid_numeric(arg):
+    if isinstance(arg, (int, float, Decimal)):
+        return arg
+    try:
+        return int(arg)
+    except ValueError:
+        return float(arg)
 
 
 @register.filter
